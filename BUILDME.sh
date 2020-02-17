@@ -24,12 +24,12 @@ function update_github_package_version {
     BRANCH=$3
     CONFIG_FILE="package/$PACKAGE/$PACKAGE.mk"
     if [ -f "$CONFIG_FILE" ]; then
-        OLDREV=$(get_package_version $PACKAGE)
+        OLDREV=$(get_package_version "$PACKAGE")
         if [ -z "$OLDREV" ]; then
             echo "Error getting OLDREV for $PACKAGE";
         else
             REPO_API=https://api.github.com/repos/$GITHUB_REPO/git/refs/heads/$BRANCH
-            GITREV=$(curl -s ${REPO_API} | awk '{ if ($1 == "\"sha\":") { print substr($2, 2, 40) } }')
+            GITREV=$(curl -s "$REPO_API" | awk '{ if ($1 == "\"sha\":") { print substr($2, 2, 40) } }')
             if [ -z "$GITREV" ]; then
                 echo "Error getting GITREV for $PACKAGE ($BRANCH)";
             else
@@ -66,7 +66,7 @@ function update_github_kernel_version {
             echo "Error getting OLDREV for $PACKAGE";
         else
             REPO_API=https://api.github.com/repos/$GITHUB_REPO/git/refs/heads/$BRANCH
-            GITREV=$(curl -s ${REPO_API} | awk '{ if ($1 == "\"sha\":") { print substr($2, 2, 40) } }')
+            GITREV=$(curl -s "$REPO_API" | awk '{ if ($1 == "\"sha\":") { print substr($2, 2, 40) } }')
             if [ -z "$GITREV" ]; then
                 echo "Error getting GITREV for $PACKAGE ($BRANCH)";
             else
@@ -111,29 +111,29 @@ fi
 
 SKIP_KERNEL_REBUILD=0
 
-for i in $*; do
+for i in "$@"; do
     # Update raspberrypi/firmware master HEAD version in package/rpi-firmware/rpi-firmware.mk to latest
-    if [ $i = "update-firmware" ]; then
+    if [ "$i" = "update-firmware" ]; then
         update_github_package_version rpi-firmware raspberrypi/firmware stable
     fi
 
     # Update raspberrypi/userland master HEAD version in package/rpi-userland/rpi-userland.mk to latest
-    if [ $i = "update-userland" ]; then
+    if [ "$i" = "update-userland" ]; then
         update_github_package_version rpi-userland raspberrypi/userland master
     fi
 
     # Update raspberrypi/linux rpi-4.1.y HEAD version in buildroot/.config to latest
-    if [ $i = "update-kernel" ]; then
+    if [ "$i" = "update-kernel" ]; then
         update_github_kernel_version raspberrypi/linux rpi-4.14.y
     fi
 
     # Option to build just recovery without completely rebuilding both kernels
-    if [ $i = "skip-kernel-rebuild" ]; then
+    if [ "$i" = "skip-kernel-rebuild" ]; then
         SKIP_KERNEL_REBUILD=1
     fi
 
     # Early-exit (in case we want to just update config files without doing a build)
-    if [ $i = "nobuild" ]; then
+    if [ "$i" = "nobuild" ]; then
         exit
     fi
 done
@@ -147,7 +147,7 @@ mkdir -p "$FINAL_OUTPUT_DIR"
 mkdir -p "$FINAL_OUTPUT_DIR/os"
 cp -r ../sdcontent/* "$FINAL_OUTPUT_DIR"
 
-if [ $SKIP_KERNEL_REBUILD -ne 1 ]; then
+if [ "$SKIP_KERNEL_REBUILD" -ne 1 ]; then
     # Rebuild kernel for ARMv7l
     select_kernelconfig armv7l
     make linux-reconfigure
@@ -177,7 +177,7 @@ cp "$IMAGES_DIR/rootfs.squashfs" "$FINAL_OUTPUT_DIR/recovery.rfs"
 cp "$IMAGES_DIR/rpi-firmware/start.elf" "$FINAL_OUTPUT_DIR/recovery.elf"
 cp "$IMAGES_DIR/rpi-firmware/start4.elf" "$FINAL_OUTPUT_DIR/recover4.elf"
 cp "$IMAGES_DIR/rpi-firmware/bootcode.bin" "$FINAL_OUTPUT_DIR"
-cp -a $IMAGES_DIR/*.dtb "$IMAGES_DIR/overlays" "$FINAL_OUTPUT_DIR"
+cp -a "$IMAGES_DIR"/*.dtb "$IMAGES_DIR/overlays" "$FINAL_OUTPUT_DIR"
 cp "$IMAGES_DIR/cmdline.txt" "$FINAL_OUTPUT_DIR/recovery.cmdline"
 touch "$FINAL_OUTPUT_DIR/RECOVERY_FILES_DO_NOT_EDIT"
 
