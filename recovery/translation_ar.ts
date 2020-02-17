@@ -489,7 +489,7 @@ WARNING: This will erase all data on your SD card</source>
         <location filename="mainwindow.cpp" line="807"/>
         <source>Display mode changed to %1
 Would you like to make this setting permanent?</source>
-        <translation>تم تغيير وضع العرض إلى %1 
+        <translation>تم تغيير وضع العرض إلى %1
 هل ترغب في جعل هذا الاعداد دائما ؟</translation>
     </message>
     <message>
