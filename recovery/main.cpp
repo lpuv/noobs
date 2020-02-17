@@ -270,9 +270,9 @@ int main(int argc, char *argv[])
     // If -runinstaller is not specified, only continue if SHIFT is pressed, GPIO is triggered,
     // or no OS is installed (/settings/installed_os.json does not exist)
     bool bailout = !runinstaller
-        && !force_trigger
-        && !(gpio_trigger && (gpio.value() == 0 ))
-        && hasInstalledOS(drive);
+                   && !force_trigger
+                   && !(gpio_trigger && (gpio.value() == 0 ))
+                   && hasInstalledOS(drive);
 
     if (bailout && keyboard_trigger)
     {
@@ -312,7 +312,7 @@ int main(int argc, char *argv[])
     mw.show();
 
 #ifdef ENABLE_LANGUAGE_CHOOSER
-     // Language chooser at the bottom center
+    // Language chooser at the bottom center
     LanguageDialog* ld = new LanguageDialog(defaultLang, defaultKeyboard);
     ld->setGeometry(QStyle::alignedRect(Qt::LeftToRight, Qt::AlignHCenter | Qt::AlignBottom, ld->size(), a.desktop()->availableGeometry()));
     ld->show();

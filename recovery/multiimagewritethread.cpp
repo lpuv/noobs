@@ -40,7 +40,7 @@ void MultiImageWriteThread::run()
     /* Calculate space requirements, and check special requirements */
     uint totalnominalsize = 0, totaluncompressedsize = 0, numparts = 0, numexpandparts = 0;
     uint startSector = getFileContents(sysclassblock(_drive, 5)+"/start").trimmed().toUInt()
-                    + getFileContents(sysclassblock(_drive, 5)+"/size").trimmed().toUInt();
+                       + getFileContents(sysclassblock(_drive, 5)+"/size").trimmed().toUInt();
     uint totalSectors = getFileContents(sysclassblock(_drive)+"/size").trimmed().toUInt();
     uint availableMB = (totalSectors-startSector)/2048;
 
@@ -157,7 +157,7 @@ void MultiImageWriteThread::run()
     {
         bootpnr = 6;
         offset = getFileContents(sysclassblock(_bootdrive, 5)+"/start").trimmed().toUInt()
-               + getFileContents(sysclassblock(_bootdrive, 5)+"/size").trimmed().toUInt();
+                 + getFileContents(sysclassblock(_bootdrive, 5)+"/size").trimmed().toUInt();
     }
 
     foreach (OsInfo *image, _images)
@@ -176,7 +176,7 @@ void MultiImageWriteThread::run()
                     /* Align at 4 MiB offset */
                     if (offset % PARTITION_ALIGNMENT != 0)
                     {
-                            offset += PARTITION_ALIGNMENT-(offset % PARTITION_ALIGNMENT);
+                        offset += PARTITION_ALIGNMENT-(offset % PARTITION_ALIGNMENT);
                     }
                     partition->setOffset(offset);
                     uint partsizeSectors = partition->partitionSizeNominal() * 2048;
@@ -223,7 +223,7 @@ void MultiImageWriteThread::run()
             /* Align at 4 MiB offset */
             if (offset % PARTITION_ALIGNMENT != 0)
             {
-                    offset += PARTITION_ALIGNMENT-(offset % PARTITION_ALIGNMENT);
+                offset += PARTITION_ALIGNMENT-(offset % PARTITION_ALIGNMENT);
             }
 
             p->setOffset(offset);
@@ -681,25 +681,25 @@ QString MultiImageWriteThread::shorten(QString example, int maxLabelLen)
     int rem;
     switch (numParts)
     {
-        case 3:
-            len=parts.last().size();
-            r=qMin((maxLabelLen-4),len);
-            rem = maxLabelLen -r-2;
-            l2 = rem/2;
-            l1 = rem-l2;
-            test= parts.first().left(l1)+"_"+parts.at(1).right(l2)+"_"+parts.last().left(r);
-            break;
+    case 3:
+        len=parts.last().size();
+        r=qMin((maxLabelLen-4),len);
+        rem = maxLabelLen -r-2;
+        l2 = rem/2;
+        l1 = rem-l2;
+        test= parts.first().left(l1)+"_"+parts.at(1).right(l2)+"_"+parts.last().left(r);
+        break;
 
-        case 2:
-            len=parts.last().size();
-            r=qMin(maxLabelLen-2, len);
-            test = parts.first().left(maxLabelLen-r-1) + "_" + parts.last().left(r);
-            break;
+    case 2:
+        len=parts.last().size();
+        r=qMin(maxLabelLen-2, len);
+        test = parts.first().left(maxLabelLen-r-1) + "_" + parts.last().left(r);
+        break;
 
-        default:
-            test = parts.first();
-            test=test.left(maxLabelLen);
-            break;
+    default:
+        test = parts.first();
+        test=test.left(maxLabelLen);
+        break;
     }
     return(test);
 }
@@ -987,29 +987,29 @@ bool MultiImageWriteThread::partclone_restore(const QString &imagePath, const QS
 void MultiImageWriteThread::patchConfigTxt()
 {
 
-        QSettings settings("/settings/noobs.conf", QSettings::IniFormat);
-        int videomode = settings.value("display_mode", 0).toInt();
+    QSettings settings("/settings/noobs.conf", QSettings::IniFormat);
+    int videomode = settings.value("display_mode", 0).toInt();
 
-        QByteArray dispOptions;
+    QByteArray dispOptions;
 
-        switch (videomode)
-        {
-        case 1: /* HDMI VGA */
-            dispOptions = "hdmi_ignore_edid=0xa5000080\r\nhdmi_force_hotplug=1\r\nhdmi_group=2\r\nhdmi_mode=4\r\n";
-            break;
-        case 2: /* PAL */
-            dispOptions = "hdmi_ignore_hotplug=1\r\nsdtv_mode=2\r\n";
-            break;
-        case 3: /* NTSC */
-            dispOptions = "hdmi_ignore_hotplug=1\r\nsdtv_mode=0\r\n";
-            break;
-        }
+    switch (videomode)
+    {
+    case 1: /* HDMI VGA */
+        dispOptions = "hdmi_ignore_edid=0xa5000080\r\nhdmi_force_hotplug=1\r\nhdmi_group=2\r\nhdmi_mode=4\r\n";
+        break;
+    case 2: /* PAL */
+        dispOptions = "hdmi_ignore_hotplug=1\r\nsdtv_mode=2\r\n";
+        break;
+    case 3: /* NTSC */
+        dispOptions = "hdmi_ignore_hotplug=1\r\nsdtv_mode=0\r\n";
+        break;
+    }
 
 
-        QFile f("/mnt2/config.txt");
-        f.open(f.Append);
-        f.write("\r\n# NOOBS Auto-generated Settings:\r\n"+dispOptions);
-        f.close();
+    QFile f("/mnt2/config.txt");
+    f.open(f.Append);
+    f.write("\r\n# NOOBS Auto-generated Settings:\r\n"+dispOptions);
+    f.close();
 
 }
 

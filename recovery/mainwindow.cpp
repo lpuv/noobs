@@ -146,7 +146,7 @@ MainWindow::MainWindow(const QString &drive, const QString &defaultDisplay, QSpl
         {
             QProcess::execute("umount /settings");
             if (QProcess::execute("/usr/sbin/mkfs.ext4 "+settingsPartition) != 0
-                || QProcess::execute("mount "+settingsPartition+" /settings") != 0)
+                    || QProcess::execute("mount "+settingsPartition+" /settings") != 0)
             {
                 QMessageBox::critical(this, tr("Reformat failed"), tr("SD card might be damaged"), QMessageBox::Close);
             }
@@ -609,9 +609,9 @@ void MainWindow::on_actionWrite_image_to_disk_triggered()
             }
         }
         if (_silent || allSupported || QMessageBox::warning(this,
-                                        tr("Confirm"),
-                                        tr("Warning: incompatible Operating System(s) detected. The following OSes aren't supported on this revision of Raspberry Pi and may fail to boot or function correctly:") + unsupportedOses,
-                                        QMessageBox::Yes, QMessageBox::No) == QMessageBox::Yes)
+                tr("Confirm"),
+                tr("Warning: incompatible Operating System(s) detected. The following OSes aren't supported on this revision of Raspberry Pi and may fail to boot or function correctly:") + unsupportedOses,
+                QMessageBox::Yes, QMessageBox::No) == QMessageBox::Yes)
         {
             setEnabled(false);
             _numMetaFilesToDownload = 0;
@@ -803,9 +803,9 @@ void MainWindow::displayMode(int modenr, bool silent)
     if (!silent && _settings)
     {
         _displayModeBox = new QMessageBox(QMessageBox::Question,
-                      tr("Display Mode Changed"),
-                      tr("Display mode changed to %1\nWould you like to make this setting permanent?").arg(mode),
-                      QMessageBox::Yes | QMessageBox::No);
+                                          tr("Display Mode Changed"),
+                                          tr("Display mode changed to %1\nWould you like to make this setting permanent?").arg(mode),
+                                          QMessageBox::Yes | QMessageBox::No);
         _displayModeBox->installEventFilter(this);
         _displayModeBox->exec();
 
@@ -857,7 +857,7 @@ bool MainWindow::eventFilter(QObject *, QEvent *event)
         {
             displayMode(2);
         }
-         // Composite NTSC
+        // Composite NTSC
         if (keyEvent->key() == Qt::Key_4 && _currentMode != 3)
         {
             displayMode(3);
@@ -977,9 +977,9 @@ void MainWindow::copyWpa()
         QFile::copy("/mnt/wpa_supplicant.conf", "/settings/wpa_supplicant.conf");
         f.setPermissions( QFile::WriteUser | QFile::ReadGroup | QFile::ReadOther | QFile::ReadUser );
 
-	/* rename the user file to indicate that it has been copied (and prevent it being re-copied next time, 
-           which could potentially overwrite any SSIDs created in the NOOBS GUI) */
-	backupFile("/mnt/wpa_supplicant.conf");
+        /* rename the user file to indicate that it has been copied (and prevent it being re-copied next time,
+               which could potentially overwrite any SSIDs created in the NOOBS GUI) */
+        backupFile("/mnt/wpa_supplicant.conf");
 
         QProcess::execute("sync");
         QProcess::execute("mount -o remount,ro /settings");
@@ -1223,7 +1223,7 @@ void MainWindow::processJson(QVariant json)
     /* Download icons */
     if (!iconurls.isEmpty())
     {
-         _numIconsToDownload += iconurls.count();
+        _numIconsToDownload += iconurls.count();
         foreach (QString iconurl, iconurls)
         {
             downloadIcon(iconurl, iconurl);
@@ -1604,8 +1604,8 @@ void MainWindow::startImageWrite()
     connect(imageWriteThread, SIGNAL(error(QString)), this, SLOT(onError(QString)));
     connect(imageWriteThread, SIGNAL(statusUpdate(QString)), _qpd, SLOT(setLabelText(QString)));
     connect(imageWriteThread, SIGNAL(runningMKFS()), _qpd, SLOT(pauseIOaccounting()), Qt::BlockingQueuedConnection);
-    connect(imageWriteThread, SIGNAL(finishedMKFS()), _qpd , SLOT(resumeIOaccounting()), Qt::BlockingQueuedConnection);
-    connect(imageWriteThread, SIGNAL(newDrive(const QString&)), _qpd , SLOT(changeDrive(const QString&)), Qt::BlockingQueuedConnection);
+    connect(imageWriteThread, SIGNAL(finishedMKFS()), _qpd, SLOT(resumeIOaccounting()), Qt::BlockingQueuedConnection);
+    connect(imageWriteThread, SIGNAL(newDrive(const QString&)), _qpd, SLOT(changeDrive(const QString&)), Qt::BlockingQueuedConnection);
     imageWriteThread->start();
     hide();
     _qpd->exec();
@@ -1746,9 +1746,9 @@ void MainWindow::on_targetCombo_currentIndexChanged(int index)
         QString devname = ui->targetCombo->itemData(index).toString();
 
         if (devname != "mmcblk0" && (
-                   !QFile::exists(sysclassblock(devname, 1))
-                || !QFile::exists(sysclassblock(devname, 5))
-                || getFileContents(sysclassblock(devname, 5)+"/size").trimmed().toInt() != SETTINGS_PARTITION_SIZE))
+                    !QFile::exists(sysclassblock(devname, 1))
+                    || !QFile::exists(sysclassblock(devname, 5))
+                    || getFileContents(sysclassblock(devname, 5)+"/size").trimmed().toInt() != SETTINGS_PARTITION_SIZE))
         {
             if (QMessageBox::question(this,
                                       tr("Reformat drive?"),
